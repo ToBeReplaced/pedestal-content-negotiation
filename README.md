@@ -11,7 +11,7 @@ Accept-Charset: utf-8, *
 Accept-Encoding: gzip, identity, *
 ```
 
-If you add the interceptor to your route, the output body will be written acccording to the content-type, charset, and encoding.
+If you add the interceptor to your route, the output body will be written according to the content-type, charset, and encoding.
 
 ```clojure
 (defn foo
