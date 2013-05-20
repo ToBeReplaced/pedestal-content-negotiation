@@ -4,7 +4,8 @@
             (clojure.data (json :as json))
             (io.pedestal.service (interceptor :refer [around]))
             (io.pedestal.service.impl (interceptor :refer [terminate])))
-  (:import (java.io OutputStreamWriter)))
+  (:import (java.io OutputStreamWriter)
+           (java.util.zip GZIPOutputStream)))
 
 (def ^:private header-keys ["accept" "accept-charset" "accept-encoding"])
 (def ^:private content-type-wildcard "*/*")
@@ -12,7 +13,7 @@
 (def ^:private encoding-wildcard "*")
 (def ^:private default-content-types ["application/edn" "application/json"])
 (def ^:private default-charsets ["utf-8"])
-(def ^:private default-encodings ["identity"])
+(def ^:private default-encodings ["identity" "gzip"])
 
 (defn route
   "Returns a content negotiation route from a possibly incomplete
@@ -160,26 +161,41 @@
 (defn- stream-writer
   "Returns a function that accepts a clojure object and returns a new
   function that writes the object using printer to an output stream."
-  [printer]
+  [stream-filter printer]
   (fn [obj]
     (fn [stream]
-      (with-open [out (OutputStreamWriter. stream)]
+      (with-open [out (OutputStreamWriter. (stream-filter stream))]
         (binding [*out* out]
           (printer obj))
         (.flush out)))))
+
+(defn- encoding-stream-filter
+  "Returns a function that filters an OutputStream according to
+  encoding."
+  [encoding]
+  (case encoding
+    "identity" identity
+    "gzip" #(GZIPOutputStream. %)
+    :else nil))
+
+(defn- content-type-printer
+  "Returns a function that prints clojure objects according to
+  content-type and content-type-params."
+  [content-type content-type-params]
+  (case content-type
+    "application/edn" pr
+    "application/json" json/pprint
+    :else nil))
 
 (defn- default-response-fn
   "Returns the default response function to handle route if one exists,
   throws ExceptionInfo with :type ::unhandled-route otherwise."
   [{:keys [content-type content-type-params charset encoding] :as route}]
-  (if (and (= {} content-type-params)
-           (some #{charset} default-charsets)
-           (some #{encoding} default-encodings))
-    (case content-type
-      "application/edn" (stream-writer pr)
-      "application/json" (stream-writer json/pprint)
-      :else (throw-unhandled-route route))
-    (throw-unhandled-route route)))
+  (let [stream-filter (encoding-stream-filter encoding)
+        printer (content-type-printer content-type content-type-params)]
+    (if (and stream-filter printer (= charset "utf-8"))
+      (stream-writer stream-filter printer)
+      (throw-unhandled-route route))))
 
 (defn route-map
   "Returns a map from a set of content negotiation routes to default
@@ -232,7 +248,9 @@
             (update-in [:response :body] (route-map route))
             (assoc-in [:response :headers "Content-Type"]
                       (content-type->str (:content-type route)
-                                         {"charset" (:charset route)}))))
+                                         {"charset" (:charset route)}))
+            (assoc-in [:response :headers "Content-Encoding"]
+                      (:encoding route))))
       context)))
 
 (defn content-negotiation

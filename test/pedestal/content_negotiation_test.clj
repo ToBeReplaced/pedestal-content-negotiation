@@ -68,7 +68,7 @@
   (testing "bad route should throw ::unhandled-route"
     (is (= :pedestal.content-negotiation/unhandled-route
            (try
-             (route-map (route {:charset "foo"}))
+             (route-map [(replace-wildcards (route {:charset "foo"}))])
              (catch ExceptionInfo e
                (:type (ex-data e))))))))
 
@@ -115,4 +115,14 @@
         (testing "json content-type"
           (is (= "application/json;charset=utf-8"
                  (get-in (response {"accept" "application/json"})
-                         [:headers "Content-Type"]))))))))
+                         [:headers "Content-Type"])))))
+      (testing "content-encoding"
+        (testing "gzip Content-Encoding"
+          (is (= "gzip"
+                 (get-in (response {"accept-encoding" "gzip"})
+                         [:headers "Content-Encoding"]))))
+        (testing "gzip encoding is compressed"
+          (is (not= "{:foo 1}" (:body (response {"accept-encoding" "gzip"})))))
+        (testing "default is identity \"Content-Encoding\""
+          (is (= "identity"
+                 (get-in (response {}) [:headers "Content-Encoding"]))))))))
