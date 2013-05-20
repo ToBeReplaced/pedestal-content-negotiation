@@ -2,6 +2,28 @@
 
 Content negotiation for Pedestal web services.
 
+## Quickstart
+
+Presently, the default "no-work-necessary" interceptor will accept:
+```
+Accept: application/edn, application/json, application/*, */*
+Accept-Charset: utf-8, *
+Accept-Encoding: gzip, identity, *
+```
+
+If you add the interceptor to your route, the output body will be written acccording to the content-type, charset, and encoding.
+
+```clojure
+(defn foo
+  "Returns a ring response with a clojure object as its body (not a string)."
+  [request]
+  {:status 200 :body {:foo 1}})
+
+(defroutes routes
+  [[["/foo" {:get foo}
+     ^:interceptors [(content-negotiation/content-negotiation)]]]])
+```
+
 ## Supported Clojure Versions
 
 pedestal-content-negotiation is tested on Clojure 1.5.1 only.
@@ -14,7 +36,7 @@ This is alpha level software.
 
 pedestal-content-negotiation is available as a Maven artifact from [Clojars]:
 ```clojure
-[pedestal-content-negotiation "0.1.0"]
+[pedestal-content-negotiation "0.2.0"]
 ```
 pedestal-content-negotiation follows [Semantic Versioning].  Please note that this means the public API is not yet considered stable, and so it is subject to change.
 
@@ -54,7 +76,7 @@ user> (pprint (content-negotiation/replace-wildcards (content-negotiation/route 
 nil
 ```
 
-The library exports an interceptor `content-negotiation` [doc].  This can be used to encode response entities outside of your ring handlers.  The main argument to the interceptor is a "route-map".  A route-map is a map from content negotiation routes to functions that encode clojure objects.  A route-map should not contain routes for any wildcards, as a wildcard-map will be used to replace wildcards with default values.  This helps keep your route-map concise and readable.  The `route-map` function can be used to create a route-map using the default functions in this library.  Alternatively, you can build one yourself from the set of routes you would like to support.
+The library exports an interceptor `content-negotiation`.  This can be used to encode response entities outside of your ring handlers.  The main argument to the interceptor is a "route-map".  A route-map is a map from content negotiation routes to functions that encode clojure objects.  A route-map should not contain routes for any wildcards, as a wildcard-map will be used to replace wildcards with default values.  This helps keep your route-map concise and readable.  The `route-map` function can be used to create a route-map using the default functions in this library.  Alternatively, you can build one yourself from the set of routes you would like to support.
 
 When a request enters `content-negotiation`, it's "Accept", "Accept-Charset", and "Accept-Encoding" request headers are parsed into an ordered sequence of content negotiation routes to compare against by following [RFC 2616].  You can do this directly via the `routes` function.
 
@@ -74,19 +96,6 @@ nil
 Notice that the q-parameter dictated which content-type is prioritized.  Each of these routes will be converted using the wildcard-map and then checked against the route-map to see if there is a match.  The first match will be attached to the ring request as ::content-negotiation.  If there is no match, a 406 Not Acceptable ring response is attached to the context.
 
 When the `:leave` event of the interceptor is triggered, if the context's response has a status of 200, it will update the response body using the function for the matched route and set the "Content-Type" and "Content-Encoding" headers accordingly.
-
-In the simplest case, just add the content-encoding interceptor to your route.
-
-```clojure
-(defn foo
-  "Returns a ring response with a clojure object as its body (not a string)."
-  [request]
-  {:status 200 :body {:foo 1}})
-
-(defroutes routes
-  [[["/foo" {:get foo}
-     ^:interceptors [(content-negotiation/content-negotiation)]]]])
-```
 
 ## Support
 
