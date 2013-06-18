@@ -37,7 +37,7 @@ This is alpha level software.
 
 pedestal-content-negotiation is available as a Maven artifact from [Clojars]:
 ```clojure
-[pedestal-content-negotiation "0.2.0"]
+[pedestal-content-negotiation "0.3.0"]
 ```
 pedestal-content-negotiation follows [Semantic Versioning].  Please note that this means the public API is not yet considered stable, and so it is subject to change.
 
@@ -96,7 +96,7 @@ nil
 
 Notice that the q-parameter dictated which content-type is prioritized.  Each of these routes will be converted using the wildcard-map and then checked against the route-map to see if there is a match.  The first match will be attached to the ring request as ::content-negotiation.  If there is no match, a 406 Not Acceptable ring response is attached to the context.
 
-When the `:leave` event of the interceptor is triggered, if the context's response has a status of 200, it will update the response body using the function for the matched route and set the "Content-Type" and "Content-Encoding" headers accordingly.
+When the `:leave` event of the interceptor is triggered, if the context's response has a status in the 2xx range, it will update the response body using the function for the matched route and set the "Content-Type" and "Content-Encoding" headers accordingly.
 
 ## Changelog
 
@@ -107,6 +107,10 @@ When the `:leave` event of the interceptor is triggered, if the context's respon
 ### v0.2.0
 
 - Add gzip to accepted default encodings.
+
+### v0.3.0
+
+- Negotiate responses with status 2xx instead of just 200.
 
 ## Support
 
