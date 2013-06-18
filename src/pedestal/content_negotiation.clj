@@ -242,7 +242,7 @@
   "Returns the leave function for the content-negotiation interceptor."
   [route-map]
   (fn [context]
-    (if (= 200 (get-in context [:response :status]))
+    (if (< 199 (get-in context [:response :status]) 299)
       (let [route (get-in context [:request ::content-negotiation])]
         (-> context
             (update-in [:response :body] (route-map route))
