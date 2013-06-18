@@ -94,7 +94,10 @@
               (-> {:request {:headers headers} queue 1}
                   context-response
                   (update-in [:body] output-str)))]
-      (testing "non 200 status codes are passed through on leave"
+      (testing "2xx status codes are accepted"
+        (is (fn? (:body (context-response {:request {:headers {}}
+                                           :response {:status 201 :body []}})))))
+      (testing "non-2xx status codes are passed through on leave"
         (is (= {:foo 1}
                (:body (context-response {:request {:headers {}}
                                          :response {:status 404 :body []}})))))
