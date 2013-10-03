@@ -51,12 +51,11 @@
      (replace-wildcards default-wildcard-map route))
   ([wildcard-map route]
      (letfn [(replace-wildcard [m k]
-               (update-in m [k] (fn [s]
-                                  (if (= s "*") (get wildcard-map k) s))))]
+               (update-in m [k]
+                          (fn [s] (if (= s "*") (get wildcard-map k) s))))]
        (-> route
-           (update-in [:content-type] (fn [s]
-                                        (get-in wildcard-map
-                                                [:content-type s] s)))
+           (update-in [:content-type]
+                      (fn [s] (get-in wildcard-map [:content-type s] s)))
            (replace-wildcard :charset)
            (replace-wildcard :encoding)))))
 
@@ -278,5 +277,5 @@
   ([not-acceptable-response-fn wildcard-map route-map]
      (around ::content-negotiation
              (content-negotiation-enter not-acceptable-response-fn
-                                         wildcard-map route-map)
+                                        wildcard-map route-map)
              (content-negotiation-leave route-map))))
