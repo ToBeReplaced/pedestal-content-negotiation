@@ -1,4 +1,4 @@
-(defproject pedestal-content-negotiation "0.3.1-SNAPSHOT"
+(defproject pedestal-content-negotiation "0.3.1"
   :description "Content negotiation for Pedestal web services."
   :url "https://github.com/ToBeReplaced/pedestal-content-negotiation"
   :license {:name "Eclipse Public License"
