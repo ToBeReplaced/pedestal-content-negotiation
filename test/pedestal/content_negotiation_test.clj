@@ -1,14 +1,11 @@
 (ns pedestal.content-negotiation-test
-  (:require (clojure (test :refer [deftest testing is])
-                     (string :refer [join]))
-            (pedestal (content-negotiation :refer [route
-                                                   routes
-                                                   default-routes
-                                                   replace-wildcards
-                                                   route-map
-                                                   content-negotiation])))
-  (:import (clojure.lang ExceptionInfo)
-           (java.io ByteArrayOutputStream)))
+  (:require [clojure.test :refer [deftest testing is]]
+            [clojure.string :refer [join]]
+            [pedestal.content-negotiation
+             :refer [route routes default-routes replace-wildcards route-map
+                     content-negotiation]])
+  (:import [clojure.lang ExceptionInfo]
+           [java.io ByteArrayOutputStream]))
 
 (deftest route-rest
   (testing "should fill in default values"
