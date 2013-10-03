@@ -37,7 +37,7 @@ This is alpha level software.
 
 pedestal-content-negotiation is available as a Maven artifact from [Clojars]:
 ```clojure
-[pedestal-content-negotiation "0.3.0"]
+[pedestal-content-negotiation "0.3.1"]
 ```
 pedestal-content-negotiation follows [Semantic Versioning].  Please note that this means the public API is not yet considered stable, and so it is subject to change.
 
@@ -49,9 +49,9 @@ pedestal-content-negotiation follows [Semantic Versioning].  Please note that th
 
 ```clojure
 ;;; Require the library
-user> (require '(pedestal (content-negotiation :as content-negotiation)))
+user> (require '[pedestal.content-negotiation :as content-negotiation])
 ;;; For the rest of the examples.
-user> (require '(clojure (pprint :refer [pprint])))
+user> (require '[clojure.pprint :refer [pprint]])
 ```
 
 Routes are the basic data structure of content negotiation.  A route is a map containing `:content-type` `:content-type-params` `:charset`, and `:encoding`.  When you are encoding a response entity, you need to match a route to a function.
@@ -100,17 +100,22 @@ When the `:leave` event of the interceptor is triggered, if the context's respon
 
 ## Changelog
 
-### v0.1.0
+### v0.3.1
 
-- Initial Release
+- Fix missing clojure.data.json dependency.
+- Remove extra dependencies inherited from pedestal-service.
+
+### v0.3.0
+
+- Negotiate responses with status 2xx instead of just 200.
 
 ### v0.2.0
 
 - Add gzip to accepted default encodings.
 
-### v0.3.0
+### v0.1.0
 
-- Negotiate responses with status 2xx instead of just 200.
+- Initial Release
 
 ## Support
 
