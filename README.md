@@ -2,6 +2,13 @@
 
 Content negotiation for Pedestal web services.
 
+NOTICE: I am no longer actively developing this library.  There is
+work that needs to be accomplished, such as making it easier to extend
+to new content-types.  Consequently, I am opening this up to requests
+for a change of ownership.  Someone with more involved
+content-negotiation needs would be a better steward than I can be
+moving forward.
+
 ## Quickstart
 
 The default interceptor will accept:
