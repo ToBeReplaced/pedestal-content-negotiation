@@ -34,7 +34,7 @@ If you add the interceptor to your route, the output body will be written accord
 
 ## Supported Clojure Versions
 
-pedestal-content-negotiation is tested on Clojure 1.5.1 only.
+pedestal-content-negotiation is tested on Clojure 1.6.0 only.
 
 ## Maturity
 

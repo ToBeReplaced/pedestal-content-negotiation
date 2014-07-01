@@ -61,7 +61,7 @@
     (testing "default route should write edn"
       (is (= "{:foo 1}" (output {}))))
     (testing "application/json should write json"
-      (is (= "{\"foo\":1}" (output {:content-type "application/json"})))))
+      (is (= "{\"foo\":1}\n" (output {:content-type "application/json"})))))
   (testing "bad route should throw ::unhandled-route"
     (is (= :pedestal.content-negotiation/unhandled-route
            (try
@@ -69,7 +69,7 @@
              (catch ExceptionInfo e
                (:type (ex-data e))))))))
 
-(def ^:private queue :io.pedestal.service.impl.interceptor/queue)
+(def ^:private queue :io.pedestal.impl.interceptor/queue)
 
 (defn- app [{response :response queue queue :as context}]
   (if queue
@@ -110,7 +110,7 @@
           (is (= "application/edn;charset=utf-8"
                  (get-in (response {}) [:headers "Content-Type"]))))
         (testing "json"
-          (is (= "{\"foo\":1}"
+          (is (= "{\"foo\":1}\n"
                  (:body (response {"accept" "application/json"})))))
         (testing "json content-type"
           (is (= "application/json;charset=utf-8"

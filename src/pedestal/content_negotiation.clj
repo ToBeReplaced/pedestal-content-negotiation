@@ -2,8 +2,8 @@
   "Content negotiation for Pedestal web services."
   (:require [clojure.string :refer [join split trim]]
             [clojure.data.json :as json]
-            [io.pedestal.service.interceptor :refer [around]]
-            [io.pedestal.service.impl.interceptor :refer [terminate]])
+            [io.pedestal.interceptor :refer [around]]
+            [io.pedestal.impl.interceptor :refer [terminate]])
   (:import [java.io OutputStreamWriter]
            [java.util.zip GZIPOutputStream]))
 
