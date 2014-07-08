@@ -44,7 +44,7 @@ This is alpha level software.
 
 pedestal-content-negotiation is available as a Maven artifact from [Clojars]:
 ```clojure
-[pedestal-content-negotiation "0.3.1"]
+[pedestal-content-negotiation "0.4.0"]
 ```
 pedestal-content-negotiation follows [Semantic Versioning].  Please note that this means the public API is not yet considered stable, and so it is subject to change.
 
