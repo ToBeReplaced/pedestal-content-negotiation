@@ -107,6 +107,10 @@ When the `:leave` event of the interceptor is triggered, if the context's respon
 
 ## Changelog
 
+### v0.4.0
+
+- Update to use pedestal 0.3.0.
+
 ### v0.3.1
 
 - Fix missing clojure.data.json dependency.
